@@ -10,8 +10,15 @@ MTSP+pre_task(diffusion)
 2.请直接运行Linear_main中的ill和exchange来测试 NLinear+ pre_diffusion <br>
 
 ## 实验数据
-1.Baseline：[Are Transformers Effective for Time Series Forecasting?](https://arxiv.org/pdf/2205.13504.pdf):
+### Baseline：[Are Transformers Effective for Time Series Forecasting?](https://arxiv.org/pdf/2205.13504.pdf):
 ![Nlinear](https://github.com/cure-lab/LTSF-Linear/blob/main/pics/Mul-results.png?raw=true](https://github.com/gedizxc/MT/blob/master/1024064503.png)https://github.com/gedizxc/MT/blob/master/1024064503.png)  
-1.our work
+### Our work
+#### Accurate test results
+#### hyper-parameters test results
+![period test](https://github.com/gedizxc/MTSP_Diffusion/blob/master/period.png)
+#### Ablation test results
+
+
+
 
 
