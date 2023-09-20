@@ -15,10 +15,12 @@ MTSP+pre_task(diffusion)
 ### Our work
 #### Accurate test results
 ![Accurate test](https://github.com/gedizxc/MTSP_Diffusion/blob/master/baseline.png)
+
+#### Ablation test results
+![Ablation test](https://github.com/gedizxc/MTSP_Diffusion/blob/master/%20Ablation.png)
+
 #### hyper-parameters test results
 ![period test](https://github.com/gedizxc/MTSP_Diffusion/blob/master/period.png)
-#### Ablation test results
-![Ablation test](https://github.com/gedizxc/MTSP_Diffusion/blob/master/Ablation.png)
 
 
 
