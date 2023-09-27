@@ -68,7 +68,6 @@ class Model(nn.Module):
         B,S,C = x.shape
         seasonal,trend,resid = stl_data
 
-
         #STL:T->Diffusion
         trend = trend.reshape(B,S,C).to(self.device)
         Unet  = self.Pre_model.UNet
