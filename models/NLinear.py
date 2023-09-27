@@ -68,27 +68,31 @@ class Model(nn.Module):
         B,S,C = x.shape
         seasonal,trend,resid = stl_data
 
+        # STL:L
+        x_resid = resid.reshape(B, S, C).to(self.device)
+
+        # STL:S
+        x_seasonal = seasonal.reshape(B,S,C).to(self.device)
+
         #STL:T->Diffusion
         trend = trend.reshape(B,S,C).to(self.device)
-        Unet  = self.Pre_model.UNet
         orgin_trend = trend
-        x_trend = torch.unsqueeze(trend, dim=1)  # 3->4维
-        sample_x = self.Pre_model.sample(Unet, sample_num = self.sample_num,enc_out = x_trend) # 32 1 104 7
-        x_trend = sample_x.view(B, -1, S, C)
-        x_trend = torch.mean(x_trend, dim=1, keepdim=True)
-        x_trend = torch.squeeze(x_trend, dim=1)
-        x_trend = x_trend + orgin_trend #残差
+
+        Unet  = self.Pre_model.UNet
+        trend = torch.unsqueeze(trend, dim=1)  # 3->4维
+        sample_x = self.Pre_model.sample(Unet, sample_num = self.sample_num,enc_out = trend) # 32 1 104 7
+        Diffusion_trend = sample_x.view(B, -1, S, C)
+        Diffusion_trend = torch.mean(Diffusion_trend, dim=1, keepdim=True)
+        Diffusion_trend = torch.squeeze(Diffusion_trend, dim=1)
+
+        x_trend = Diffusion_trend + orgin_trend #残差
 
         #Revin
         # x_trend = self.rev(x_trend, 'norm') if self.rev else x_trend
         # x_trend = self.dropout(x_trend)
 
-        # STL:L
-        x_resid = resid.reshape(B, S, C).to(self.device)
 
 
-        # STL:S
-        x_seasonal = seasonal.reshape(B,S,C).to(self.device) #2->3
         #NLinear
         x = x_trend
         seq_last = x[:, -1:, :].detach()
