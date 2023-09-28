@@ -80,6 +80,8 @@ class Exp_Main(Exp_Basic):
         for epoch in range(self.args.train_epochs):
             iter_count = 0
             train_loss = []
+            pre_result = []
+            gt = []
 
             self.model.train()
             epoch_time = time.time()
@@ -110,6 +112,10 @@ class Exp_Main(Exp_Basic):
                 outputs = outputs[:, -self.args.pred_len:, f_dim:]
                 batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
                 loss = criterion(outputs, batch_y)
+
+                if self.args.features == 'M':
+                  pre_result.append(outputs[0,:,-1].detach().numpy())
+                  gt.append(batch_y[0, :, -1].detach().numpy())
 
 
                 train_loss.append(loss.item())
@@ -150,6 +156,17 @@ class Exp_Main(Exp_Basic):
                 break
 
             adjust_learning_rate(model_optim, epoch + 1, self.args)
+
+            #draw pic
+            pre_result = np.concatenate(pre_result, axis=0)
+            gt = np.concatenate(gt, axis=0)
+
+            folder_path = './visual/{}_train_pre/'.format(self.args.data)
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+            train_result_path = '{}_epoch:{}'.format(self.args.data,str(epoch))
+            visual(pre_result, gt, os.path.join(folder_path, train_result_path + '.pdf'))
+
 
 
         best_model_path = path + '/' + 'checkpoint.pth'
