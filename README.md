@@ -22,6 +22,16 @@ MTSP+pre_task(diffusion)
 #### hyper-parameters test results
 ![period test](https://github.com/gedizxc/MTSP_Diffusion/blob/master/period.png)
 
+## 数据分析
+### 原始数据集分析
+![draft](https://github.com/gedizxc/MTSP_Diffusion/blob/master/draft.png)
+
+### 训练策略分析
+![ACF](https://github.com/gedizxc/MTSP_Diffusion/blob/master/ACF.png)
+
+### 模型优化分析
+![optim](https://github.com/gedizxc/MTSP_Diffusion/blob/master/optim.png)
+
 
 
 
