@@ -1,4 +1,4 @@
-# MTSP_Diffusion
+# MTSP_Diffusion(CCNU 1207)
 MTSP+pre_task(diffusion)
 
 ## 数据集
