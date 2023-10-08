@@ -33,6 +33,10 @@ MTSP+pre_task(diffusion)
 ![optim](https://github.com/gedizxc/MTSP_Diffusion/blob/master/optim.png)
 
 
+## 致谢
+https://github.com/cure-lab/LTSF-Linear
+
+
 
 
 
