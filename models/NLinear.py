@@ -84,14 +84,8 @@ class Model(nn.Module):
         Diffusion_trend = sample_x.view(B, -1, S, C)
         Diffusion_trend = torch.mean(Diffusion_trend, dim=1, keepdim=True)
         Diffusion_trend = torch.squeeze(Diffusion_trend, dim=1)
-
-        x_trend = Diffusion_trend + orgin_trend #残差
-
-        #Revin
-        # x_trend = self.rev(x_trend, 'norm') if self.rev else x_trend
-        # x_trend = self.dropout(x_trend)
-
-
+        # 残差
+        x_trend = Diffusion_trend + orgin_trend
 
         #NLinear
         x = x_trend
@@ -106,10 +100,8 @@ class Model(nn.Module):
             x = self.Linear(x.permute(0, 2, 1)).permute(0, 2, 1)
         x = x + seq_last
 
-        #x_trend = x_trend[:,:self.pred_len,:]
         res = x + x_seasonal[:,:self.pred_len,:]  #+trend[:,:self.pred_len,:]
 
-        #revin
-        # res =  self.rev(res, 'denorm') if self.rev else res
+
 
         return res  # [Batch, Output length, Channel]

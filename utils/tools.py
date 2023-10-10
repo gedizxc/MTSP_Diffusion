@@ -72,3 +72,12 @@ def visual(true, preds=None, name='./pic/test.pdf'):
         plt.plot(preds, label='Prediction', linewidth=2)
     plt.legend()
     plt.savefig(name, bbox_inches='tight')
+
+def visual_stl(s,t,l,inputx,path):
+    plt.figure()
+    plt.plot(s, label='s',linewidth=1)
+    plt.plot(t, label='t', linewidth=1)
+    plt.plot(l, label='l',linewidth=1)
+    plt.plot(inputx, color = 'black',label='input', linewidth=2.5)
+    plt.legend()
+    plt.savefig(path, bbox_inches='tight')

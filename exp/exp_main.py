@@ -4,7 +4,7 @@
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
 from models import Informer, Transformer,  Linear, NLinear,DLinear
-from utils.tools import EarlyStopping,adjust_learning_rate,visual
+from utils.tools import EarlyStopping,adjust_learning_rate,visual,visual_stl
 from utils.metrics import metric
 
 from Pretrain_diffusion.pre_main import Pretrain_diffusion
@@ -114,8 +114,8 @@ class Exp_Main(Exp_Basic):
                 loss = criterion(outputs, batch_y)
 
                 if self.args.features == 'M':
-                  pre_result.append(outputs[0,:,-1].detach().numpy())
-                  gt.append(batch_y[0, :, -1].detach().numpy())
+                  pre_result.append(outputs[0,:,-1].cpu().detach().numpy())
+                  gt.append(batch_y[0, :, -1].cpu().detach().numpy())
 
 
                 train_loss.append(loss.item())
@@ -158,13 +158,13 @@ class Exp_Main(Exp_Basic):
             adjust_learning_rate(model_optim, epoch + 1, self.args)
 
             #draw pic
-            pre_result = np.concatenate(pre_result, axis=0)
-            gt = np.concatenate(gt, axis=0)
+            pre_result = np.concatenate(pre_result, axis=0).reshape(-1,1)
+            gt = np.concatenate(gt, axis=0).reshape(-1,1)
 
-            folder_path = './visual/{}_train_pre/'.format(self.args.data)
+            folder_path = './visual/{}/train/'.format(self.args.data)
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
-            train_result_path = '{}_epoch:{}'.format(self.args.data,str(epoch))
+            train_result_path = 'pre_gt_epoch:{}'.format(str(epoch))
             visual(pre_result, gt, os.path.join(folder_path, train_result_path + '.pdf'))
 
 
@@ -217,12 +217,16 @@ class Exp_Main(Exp_Basic):
             self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
         preds = []
         trues = []
-        inputx = []
-        folder_path = './test_results/' + setting + '/'
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
 
+        #visual
+        pre_result = []
+        gt = []
+        s = []
+        t =[]
+        l = []
+        inputx = []
         self.model.eval()
+
         with torch.no_grad():
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark,stl_data) in enumerate(test_loader):
                 batch_x = batch_x.float().to(self.device)
@@ -255,32 +259,43 @@ class Exp_Main(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
-                inputx.append(batch_x.detach().cpu().numpy())
-                if i % 5 == 0:
-                    input = batch_x.detach().cpu().numpy()
-                    gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) #32 104 7 /32 24 7
-                    pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
-                    visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
+
+                pre_result.append(pred[0,:,-1])
+                gt.append(true[0,:,-1])
+
+                s.append(stl_data[0][0,:,-1])
+                t.append(stl_data[1][0,:,-1])
+                l.append(stl_data[2][0,:,-1])
+                inputx.append(batch_x[0, :, -1].detach().cpu().numpy())
 
 
-        preds = np.concatenate(preds, axis=0)
-        trues = np.concatenate(trues, axis=0)
-        inputx = np.concatenate(inputx, axis=0)
+        #visual pre_gt
+        pre_result = np.concatenate(pre_result, axis=0)
+        gt = np.concatenate(gt, axis=0)
 
-        # result save
-        folder_path = './results/' + setting + '/'
+
+        folder_path = './visual/{}/test/'.format(self.args.data)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
+        visual(pre_result, gt, os.path.join(folder_path, 'pre_gt.pdf'))
+
+        #visual stl
+        s = np.concatenate(s, axis=0)
+        t = np.concatenate(t, axis=0)
+        l = np.concatenate(l, axis=0)
+        inputx = np.concatenate(inputx, axis=0)
+
+        folder_path = './visual/{}/test_STL/'.format(self.args.data)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        visual_stl(s,t,l,inputx,os.path.join(folder_path, 'stl.pdf'))
+
+
+
+        #result
+        preds = np.concatenate(preds, axis=0)
+        trues = np.concatenate(trues, axis=0)
         mae, mse, rmse, mape, mspe, rse, corr = metric(preds, trues)
         print('mse:{}, mae:{}'.format(mse, mae))
-        f = open("result.txt", 'a')
-        f.write(setting + "  \n")
-        f.write('mse:{}, mae:{}, rse:{}, corr:{}'.format(mse, mae, rse, corr))
-        f.write('\n')
-        f.write('\n')
-        f.close()
-
-        np.save(folder_path + 'pred.npy', preds)
-
         return
