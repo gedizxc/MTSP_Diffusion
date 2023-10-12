@@ -46,7 +46,7 @@ parser.add_argument('--freq', type=str, default='h',
 parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
 
 # forecasting taskdevice
-parser.add_argument('--seq_len', type=int, default=104, help='input sequence length') ##
+parser.add_argument('--seq_len', type=int, default=36, help='input sequence length') ##104
 parser.add_argument('--label_len', type=int, default=18, help='start token length') ##
 parser.add_argument('--pred_len', type=int, default=24, help='prediction sequence length,96,192,336,720') ##
 

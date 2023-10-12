@@ -38,7 +38,7 @@ class Model(nn.Module):
         if configs.is_diffusion:
             self.UNet = UNet(num_steps=configs.noise_step, seq_len=self.seq_len ,channels=self.enc_in)  # Unet初始化给seq_input_len 的维度
             model_path = '{}_noise_step:{}'.format(configs.data, configs.noise_step)
-            pre_path = os.path.join('../Pretrain_diffusion/Pretrain_checkpoints', model_path)
+            pre_path = os.path.join('../Pretrain_diffusion/Pretrain_checkpoints/{}'.format(self.seq_len), model_path)
 
             Pretrain = Pretrain_diffusion(configs).to(self.device)
             self.Pre_model = Pretrain.model
@@ -88,7 +88,7 @@ class Model(nn.Module):
         x_trend = Diffusion_trend + orgin_trend
 
         #NLinear
-        x = x_trend
+        x = x_trend+x_seasonal
         seq_last = x[:, -1:, :].detach()
         x = x - seq_last
         if self.individual:
@@ -100,7 +100,7 @@ class Model(nn.Module):
             x = self.Linear(x.permute(0, 2, 1)).permute(0, 2, 1)
         x = x + seq_last
 
-        res = x + x_seasonal[:,:self.pred_len,:]  #+trend[:,:self.pred_len,:]
+        res = x #+ x_seasonal[:,:self.pred_len,:]  #+trend[:,:self.pred_len,:]
 
 
 

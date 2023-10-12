@@ -51,7 +51,7 @@ def pretrain(args):
         vali_data, vali_loader = Pretrain._get_data(flag='val')
         test_data, test_loader = Pretrain._get_data(flag='test')
     model_path = '{}_noise_step:{}'.format(args.data,args.noise_step)
-    path = os.path.join('./Pretrain_checkpoints',model_path)
+    path = os.path.join('./Pretrain_checkpoints/{}'.format(args.seq_len),model_path)
     if not os.path.exists(path):
         os.makedirs(path)
 
