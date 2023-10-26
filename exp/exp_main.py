@@ -165,7 +165,7 @@ class Exp_Main(Exp_Basic):
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
             train_result_path = 'pre_gt_epoch:{}'.format(str(epoch))
-            visual(pre_result, gt, os.path.join(folder_path, train_result_path + '.pdf'))
+            visual(pre_result[0:720], gt[0:720], os.path.join(folder_path, train_result_path + '.pdf'))
 
 
 
@@ -278,13 +278,13 @@ class Exp_Main(Exp_Basic):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        visual(pre_result, gt, os.path.join(folder_path, 'pre_gt.pdf'))
+        visual(pre_result[0:200], gt[0:200], os.path.join(folder_path, 'pre_gt.pdf'))
 
         #visual stl
-        s = np.concatenate(s, axis=0)
-        t = np.concatenate(t, axis=0)
-        l = np.concatenate(l, axis=0)
-        inputx = np.concatenate(inputx, axis=0)
+        s = np.concatenate(s, axis=0)[0:500]
+        t = np.concatenate(t, axis=0)[0:500]
+        l = np.concatenate(l, axis=0)[0:500]
+        inputx = np.concatenate(inputx, axis=0)[0:500]
 
         folder_path = './visual/{}/test_STL/'.format(self.args.data)
         if not os.path.exists(folder_path):

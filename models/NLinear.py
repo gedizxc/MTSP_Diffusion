@@ -88,7 +88,7 @@ class Model(nn.Module):
         x_trend = Diffusion_trend + orgin_trend
 
         #NLinear
-        x = x_trend+x_seasonal
+        x = x_trend #+x_seasonal
         seq_last = x[:, -1:, :].detach()
         x = x - seq_last
         if self.individual:
@@ -100,7 +100,7 @@ class Model(nn.Module):
             x = self.Linear(x.permute(0, 2, 1)).permute(0, 2, 1)
         x = x + seq_last
 
-        res = x #+ x_seasonal[:,:self.pred_len,:]  #+trend[:,:self.pred_len,:]
+        res = x + x_seasonal[:,-self.pred_len:,:]  #+trend[:,:self.pred_len,:]
 
 
 

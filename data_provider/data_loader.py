@@ -305,7 +305,7 @@ class Dataset_Custom(Dataset):
         for i ,col in enumerate(cols):
             df = STL_Data[col]
             #res = STL(df).fit()
-            res = STL(df, period=104).fit()  # weather：6*24，ettm1:4x24
+            res = STL(df, period=96).fit()  # weather：6*24，ettm1:4x24
             s[:, i] = torch.tensor(np.array(res.seasonal.values), dtype=torch.float32)
             t[:, i] = torch.tensor(np.array(res.trend.values), dtype=torch.float32)
             l[:, i] = torch.tensor(np.array(res.resid.values), dtype=torch.float32)
