@@ -88,7 +88,11 @@ class Model(nn.Module):
         x_trend = Diffusion_trend + orgin_trend
 
         #NLinear
-        x = x_trend #+x_seasonal
+        if self.seq_len>=self.pred_len:
+            x = x_trend
+        else:
+            x = x_trend + x_seasonal
+
         seq_last = x[:, -1:, :].detach()
         x = x - seq_last
         if self.individual:
@@ -99,9 +103,9 @@ class Model(nn.Module):
         else:
             x = self.Linear(x.permute(0, 2, 1)).permute(0, 2, 1)
         x = x + seq_last
-
-        res = x + x_seasonal[:,-self.pred_len:,:]  #+trend[:,:self.pred_len,:]
-
-
+        if self.seq_len>=self.pred_len:
+            res = x + x_seasonal[:,-self.pred_len:,:]
+        else:
+            res =x
 
         return res  # [Batch, Output length, Channel]
